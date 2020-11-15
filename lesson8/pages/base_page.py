@@ -81,3 +81,32 @@ class BasePage:
     def is_footer_present(self):
         assert self.wait_for_element(BasePageLocators.FOOTER) is not None
 
+    def get_cart_items_number(self):
+        cart_items_total = self.wait_for_element(BasePageLocators.CART_TOTAL)
+        cart_items = cart_items_total.text.split(" - ")[0]
+        return cart_items
+
+    def get_cart_total(self):
+        cart_items_total = self.wait_for_element(BasePageLocators.CART_TOTAL)
+        cart_total = cart_items_total.text.split(" - ")[1]
+        return cart_total
+
+    def click_cart(self):
+        self.wait_for_element(BasePageLocators.CART_BUTTON).click()
+
+    def is_items_num_in_cart_equal_to(self, number):
+        assert f"{number} item(s)" == self.get_cart_items_number()
+
+    def is_cart_total_equal_to(self, sum):
+        print(sum)
+        print(self.get_cart_total())
+        assert sum == self.get_cart_total()
+
+    def is_alert_present(self):
+        assert self.wait_for_element(BasePageLocators.ALERT_SUCCESS) is not None
+
+    def get_alert_text(self):
+        return self.wait_for_element(BasePageLocators.ALERT_SUCCESS).text
+
+    def is_text_in_alert(self, text):
+        assert text in self.get_alert_text()

@@ -24,3 +24,9 @@ def test_is_grid_view_input_present(catalog_page):
 
 def test_is_side_menu_present(catalog_page):
     catalog_page.is_side_menu_present()
+
+
+def test_add_to_compare(catalog_page):
+    catalog_page.add_item_to_compare()
+    catalog_page.is_alert_present()
+    catalog_page.is_compare_num_equal_to(1)
