@@ -3,11 +3,11 @@ from selenium import webdriver as wd
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.opera.options import Options as OperaOptions
-from pages.main_page import MainPage
-from pages.catalog_page import CatalogPage
-from pages.product_page import ProductPage
-from pages.login_page import LoginPage
 from pages.admin_login_page import AdminLoginPage
+from pages.catalog_page import CatalogPage
+from pages.login_page import LoginPage
+from pages.main_page import MainPage
+from pages.product_page import ProductPage
 
 
 def pytest_addoption(parser):
