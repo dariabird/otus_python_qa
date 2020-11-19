@@ -98,8 +98,6 @@ class BasePage:
         assert f"{number} item(s)" == self.get_cart_items_number()
 
     def is_cart_total_equal_to(self, sum):
-        print(sum)
-        print(self.get_cart_total())
         assert sum == self.get_cart_total()
 
     def is_alert_present(self):

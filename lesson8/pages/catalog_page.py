@@ -1,7 +1,7 @@
-from locators.catalog_page_locators import CatalogPageLocators
-from pages.base_page import BasePage
 import re
 from selenium.common.exceptions import NoSuchElementException
+from locators.catalog_page_locators import CatalogPageLocators
+from pages.base_page import BasePage
 
 
 class CatalogPage(BasePage):
@@ -59,4 +59,3 @@ class CatalogPage(BasePage):
 
     def is_compare_num_equal_to(self, num):
         assert self.get_product_compare_num() == num
-

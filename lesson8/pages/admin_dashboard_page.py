@@ -1,5 +1,5 @@
-from pages.base_page import BasePage
 from locators.admin_dashboard_page_locators import AdminDashboardPageLocators
+from pages.base_page import BasePage
 
 
 class AdminDashboardPage(BasePage):

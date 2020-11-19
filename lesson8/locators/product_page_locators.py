@@ -1,5 +1,5 @@
-from locators.base_page_locators import BasePageLocators
 from selenium.webdriver.common.by import By
+from locators.base_page_locators import BasePageLocators
 
 
 class ProductPageLocators(BasePageLocators):

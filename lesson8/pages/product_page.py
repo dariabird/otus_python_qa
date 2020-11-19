@@ -1,6 +1,6 @@
-from pages.base_page import BasePage
-from locators.product_page_locators import ProductPageLocators
 from selenium.common.exceptions import NoSuchElementException
+from locators.product_page_locators import ProductPageLocators
+from pages.base_page import BasePage
 
 
 class ProductPage(BasePage):
@@ -45,5 +45,3 @@ class ProductPage(BasePage):
     def click_thumbnail_image(self, item_num=0):
         thumbnail_image = self.get_thumbnail_image(item_num)
         thumbnail_image.click()
-
-
