@@ -31,12 +31,15 @@ class MyListener(AbstractEventListener):
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--browser", action="store", default="chrome", help="permitted values: chrome, firefox, opera"
-    )
-    parser.addoption(
-        "--url", action="store", default="https://demo.opencart.com", help="URL for test"
-    )
+    parser.addoption("--browser", action="store", default="chrome")
+    parser.addoption("--bversion", action="store", default="87.0")
+    parser.addoption("--url", action="store", default="https://demo.opencart.com", help="URL for test")
+    parser.addoption("--is_remote", action="store_true", default=False)
+    parser.addoption("--vnc", action="store_true", default=False)
+    parser.addoption("--logs", action="store_true", default=False)
+    parser.addoption("--videos", action="store_true", default=False)
+    parser.addoption("--executor", action="store", default="localhost")
+    parser.addoption("--mobile", action="store_true")
 
 
 @pytest.fixture(scope="session")
@@ -45,27 +48,66 @@ def url(request):
 
 
 @pytest.fixture(scope="session")
-def browser(request):
-    return request.config.getoption("--browser")
-
-
-@pytest.fixture(scope="session")
-def driver(request, browser):
+def driver(request):
     logger = logging.getLogger('BrowserLogger')
 
-    if browser == "firefox":
-        firefox_options = FirefoxOptions()
-        firefox_options.headless = True
-        driver = wd.Firefox(options=firefox_options)
-    elif browser == "opera":
-        opera_options = OperaOptions()
-        opera_options.add_argument("headless")
-        driver = wd.Opera(options=opera_options)
+    browser = request.config.getoption("--browser")
+    version = request.config.getoption("--bversion")
+    executor = request.config.getoption("--executor")
+    vnc = request.config.getoption("--vnc")
+    logs = request.config.getoption("--logs")
+    videos = request.config.getoption("--videos")
+    executor_url = f"http://{executor}:4444/wd/hub"
+    mobile = request.config.getoption("--mobile")
+    is_remote = request.config.getoption("--is_remote")
+
+    caps = {
+        "browserName": browser,
+        "browserVersion": version,
+        "screenResolution": "1280x720",
+        "name": "Tester",
+        "selenoid:options": {
+            "enableVNC": vnc,
+            "enableVideo": videos,
+            "enableLog": logs,
+        },
+        'acceptSslCerts': True,
+        'acceptInsecureCerts': True,
+        'timeZone': 'Europe/Moscow',
+        'goog:chromeOptions': {
+            'args': []
+        }
+    }
+
+    mobile_emulation = {"deviceName": "iPhone 5/SE"}
+
+    if is_remote:
+        if browser == "chrome" and mobile:
+            caps["goog:chromeOptions"]["mobileEmulation"] = mobile_emulation
+
+        driver = wd.Remote(
+            command_executor=executor_url,
+            desired_capabilities=caps
+        )
     else:
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument("headless")
-        driver = wd.Chrome(options=chrome_options)
-    driver.maximize_window()
+        if browser == "firefox":
+            firefox_options = FirefoxOptions()
+            firefox_options.headless = True
+            driver = wd.Firefox(options=firefox_options)
+        elif browser == "opera":
+            opera_options = OperaOptions()
+            opera_options.add_argument("headless")
+            driver = wd.Opera(options=opera_options)
+        else:
+            chrome_options = ChromeOptions()
+            chrome_options.add_argument("headless")
+            if mobile:
+                chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+            driver = wd.Chrome(options=chrome_options)
+
+    if not mobile:
+        driver.maximize_window()
+
     logger.info(f"Browser {browser} started.")
     driver = EventFiringWebDriver(driver, MyListener())
 
