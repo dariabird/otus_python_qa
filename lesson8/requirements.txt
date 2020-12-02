@@ -1,3 +1,5 @@
+allure-pytest
 pytest
-selenium
 pytest-xdist
+requests
+selenium

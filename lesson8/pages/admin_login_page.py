@@ -1,3 +1,5 @@
+import allure
+
 from locators.admin_login_page_locators import AdminLoginPageLocators
 from pages.base_page import BasePage
 
@@ -26,16 +28,19 @@ class AdminLoginPage(BasePage):
         assert self.wait_for_element(AdminLoginPageLocators.HEADER_LOGO) is not None
         self.logger.info("Logo in header present")
 
+    @allure.step("Input username")
     def input_username(self, username="demo"):
         username_input = self.wait_for_element(AdminLoginPageLocators.USERNAME_INPUT)
         username_input.send_keys(username)
         self.logger.info("Inputted username")
 
+    @allure.step("Input password")
     def input_password(self, password="demo"):
         password_input = self.wait_for_element(AdminLoginPageLocators.PASSWORD_INPUT)
         password_input.send_keys(password)
         self.logger.info("Inputted password")
 
+    @allure.step("Click login button")
     def click_login_button(self):
         login_btn = self.wait_for_element(AdminLoginPageLocators.LOGIN_BUTTON)
         login_btn.click()

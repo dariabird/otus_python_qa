@@ -8,4 +8,4 @@ class MainPageLocators(BasePageLocators):
     FEATURED_PRODUCTS = By.CSS_SELECTOR, "#content div.product-layout"
     ADD_TO_CART_ICON = By.CSS_SELECTOR, ".fa-shopping-cart"
     FAV_ICON = By.CSS_SELECTOR, ".fa-heart"
-    BRENDS_CAROUSEL = By.CSS_SELECTOR, "div#carousel0"
+    BRANDS_CAROUSEL = By.CSS_SELECTOR, "div#carousel0"

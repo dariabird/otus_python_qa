@@ -1,5 +1,8 @@
+import allure
+import json
 import logging
 import pytest
+import requests
 import time
 
 from selenium import webdriver as wd
@@ -7,13 +10,14 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.opera.options import Options as OperaOptions
 from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
+
 from pages.admin_login_page import AdminLoginPage
 from pages.catalog_page import CatalogPage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from pages.product_page import ProductPage
 
-logging.basicConfig(level=logging.INFO, filename=f"logs/selenium_{time.strftime('%Y-%m-%d-%H-%M-%S')}.log")
+logging.basicConfig(level=logging.INFO, filename=f"tests/logs/selenium_{time.strftime('%Y-%m-%d-%H-%M-%S')}.log")
 
 
 class MyListener(AbstractEventListener):
@@ -98,12 +102,14 @@ def driver(request):
             opera_options = OperaOptions()
             opera_options.add_argument("headless")
             driver = wd.Opera(options=opera_options)
-        else:
+        elif browser == "chrome":
             chrome_options = ChromeOptions()
             chrome_options.add_argument("headless")
             if mobile:
                 chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
             driver = wd.Chrome(options=chrome_options)
+        else:
+            raise ValueError(f"{browser} browser not supported")
 
     if not mobile:
         driver.maximize_window()
@@ -111,9 +117,34 @@ def driver(request):
     logger.info(f"Browser {browser} started.")
     driver = EventFiringWebDriver(driver, MyListener())
 
+    # Attach browser data
+    allure.attach(
+        name=driver.session_id,
+        body=json.dumps(driver.desired_capabilities),
+        attachment_type=allure.attachment_type.JSON)
+
+    # Add environment info to allure-report
+    with open("allure-report/environment.xml", "w+") as file:
+        file.write(f"""<environment>
+                    <parameter>
+                        <key>Browser</key>
+                        <value>{browser}</value>
+                    </parameter>
+                    <parameter>
+                        <key>Browser.Version</key>
+                        <value>{version}</value>
+                    </parameter>
+                    <parameter>
+                        <key>Executor</key>
+                        <value>{executor}</value>
+                    </parameter>
+                </environment>
+                """)
+
     def teardown():
         driver.quit()
         logger.info(f"Browser {browser} closed")
+
     request.addfinalizer(teardown)
     return driver
 
@@ -124,6 +155,7 @@ def test_name(request):
     logger.info(f"===> Test {request.node.name} <===")
 
 
+@allure.step("Open main page")
 @pytest.fixture()
 def main_page(driver, url):
     main_page = MainPage(driver, url)
@@ -131,6 +163,7 @@ def main_page(driver, url):
     return main_page
 
 
+@allure.step("Open catalog page")
 @pytest.fixture(params=[20])
 def catalog_page(request, driver, url):
     catalog_page = CatalogPage(driver, url, request.param)
@@ -138,6 +171,7 @@ def catalog_page(request, driver, url):
     return catalog_page
 
 
+@allure.step("Open page for product with path_id: {path_id} product_id:{product_id}")
 @pytest.fixture(params=[{"path_id": 57, "product_id": 49}])
 def product_page(request, driver, url):
     product_page = ProductPage(driver, url, **request.param)
@@ -145,6 +179,7 @@ def product_page(request, driver, url):
     return product_page
 
 
+@allure.step("Open login page")
 @pytest.fixture()
 def login_page(driver, url):
     login_page = LoginPage(driver, url)
@@ -152,6 +187,7 @@ def login_page(driver, url):
     return login_page
 
 
+@allure.step("Open admin page")
 @pytest.fixture()
 def admin_login_page(driver, url):
     admin_login_page = AdminLoginPage(driver, url)

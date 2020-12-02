@@ -1,3 +1,5 @@
+import allure
+
 from locators.admin_dashboard_page_locators import AdminDashboardPageLocators
 from pages.base_page import BasePage
 
@@ -14,16 +16,19 @@ class AdminDashboardPage(BasePage):
         assert self.wait_for_element(AdminDashboardPageLocators.LOGOUT_BUTTON) is not None
         self.logger.info("Log out button present")
 
+    @allure.step("Click log out")
     def click_logout(self):
         logout_btn = self.wait_for_element(AdminDashboardPageLocators.LOGOUT_BUTTON)
         logout_btn.click()
         self.logger.info("Log out clicked")
 
+    @allure.step("Click catalog")
     def click_catalog(self):
         catalog_item = self.wait_for_element(AdminDashboardPageLocators.CATALOG)
         catalog_item.click()
         self.logger.info("Catalog clicked")
 
+    @allure.step("Click products in catalog")
     def click_products_in_catalog(self):
         products_item = self.wait_for_element_to_be_visible(AdminDashboardPageLocators.PRODUCTS_IN_CATALOG)
         products_item.click()
