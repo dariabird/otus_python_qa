@@ -2,7 +2,6 @@ import allure
 import json
 import logging
 import pytest
-import requests
 import time
 
 from selenium import webdriver as wd
