@@ -1,3 +1,5 @@
+import allure
+
 from locators.admin_login_page_locators import AdminLoginPageLocators
 from pages.base_page import BasePage
 
@@ -7,31 +9,39 @@ class AdminLoginPage(BasePage):
         super().__init__(driver, url + "/admin")
 
     def is_username_input_present(self):
-        assert self.wait_for_elements(AdminLoginPageLocators.USERNAME_INPUT) is not None
+        assert self.wait_for_element(AdminLoginPageLocators.USERNAME_INPUT) is not None
+        self.logger.info("Username input present")
 
     def is_password_input_present(self):
-        assert self.wait_for_elements(AdminLoginPageLocators.PASSWORD_INPUT) is not None
+        assert self.wait_for_element(AdminLoginPageLocators.PASSWORD_INPUT) is not None
+        self.logger.info("Password input present")
 
     def is_login_button_present(self):
-        assert self.wait_for_elements(AdminLoginPageLocators.LOGIN_BUTTON) is not None
+        assert self.wait_for_element(AdminLoginPageLocators.LOGIN_BUTTON) is not None
+        self.logger.info("Login button present")
 
     def is_forgotten_password_link_present(self):
-        assert self.wait_for_elements(AdminLoginPageLocators.FORGOTTEN_PASSWORD_LINK) is not None
+        assert self.wait_for_element(AdminLoginPageLocators.FORGOTTEN_PASSWORD_LINK) is not None
+        self.logger.info("Forgotten password link present")
 
     def is_header_logo_present(self):
-        assert self.wait_for_elements(AdminLoginPageLocators.HEADER_LOGO) is not None
+        assert self.wait_for_element(AdminLoginPageLocators.HEADER_LOGO) is not None
+        self.logger.info("Logo in header present")
 
+    @allure.step("Input username")
     def input_username(self, username="demo"):
         username_input = self.wait_for_element(AdminLoginPageLocators.USERNAME_INPUT)
-        if username_input:
-            username_input.send_keys(username)
+        username_input.send_keys(username)
+        self.logger.info("Inputted username")
 
+    @allure.step("Input password")
     def input_password(self, password="demo"):
         password_input = self.wait_for_element(AdminLoginPageLocators.PASSWORD_INPUT)
-        if password_input:
-            password_input.send_keys(password)
+        password_input.send_keys(password)
+        self.logger.info("Inputted password")
 
+    @allure.step("Click login button")
     def click_login_button(self):
         login_btn = self.wait_for_element(AdminLoginPageLocators.LOGIN_BUTTON)
-        if login_btn:
-            login_btn.click()
+        login_btn.click()
+        self.logger.info("Login button clicked")
