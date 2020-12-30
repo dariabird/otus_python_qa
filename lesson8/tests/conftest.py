@@ -41,7 +41,7 @@ def pytest_addoption(parser):
     parser.addoption("--vnc", action="store_true", default=False)
     parser.addoption("--logs", action="store_true", default=False)
     parser.addoption("--videos", action="store_true", default=False)
-    parser.addoption("--executor", action="store", default="localhost")
+    parser.addoption("--executor", action="store", default="192.168.88.177")
     parser.addoption("--mobile", action="store_true")
 
 
@@ -103,7 +103,7 @@ def driver(request):
             driver = wd.Opera(options=opera_options)
         elif browser == "chrome":
             chrome_options = ChromeOptions()
-            chrome_options.add_argument("headless")
+            # chrome_options.add_argument("headless")
             if mobile:
                 chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
             driver = wd.Chrome(options=chrome_options)
