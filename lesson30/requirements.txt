@@ -1,0 +1,7 @@
+robotframework-seleniumlibrary==4.5.0
+robotframework-databaselibrary==1.2.4
+robotframework-requests==0.8.0
+robotframework-datadriver==1.0.0
+robotframework-pabot==1.10.1
+PyMySQL==1.0.1
+allure-robotframework==2.8.29
